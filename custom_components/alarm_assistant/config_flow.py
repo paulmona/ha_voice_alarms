@@ -60,6 +60,10 @@ class AlarmAssistantConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(
                         CONF_ALARM_VOLUME, default=SERVICE_DEFAULTS[CONF_ALARM_VOLUME]
                     ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=1.0)),
+                    vol.Optional(
+                        "custom_sound_path",
+                        description="Custom sound file path (e.g., /local/my_sounds/alarm.mp3 or http://...)",
+                    ): str,
                 }
             )
 
@@ -125,6 +129,11 @@ class AlarmAssistantOptionsFlow(config_entries.OptionsFlow):
                     CONF_ALARM_VOLUME,
                     default=defaults.get(CONF_ALARM_VOLUME, SERVICE_DEFAULTS[CONF_ALARM_VOLUME]),
                 ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=1.0)),
+                vol.Optional(
+                    "custom_sound_path",
+                    default=defaults.get("custom_sound_path", ""),
+                    description="Custom sound file path (e.g., /local/my_sounds/alarm.mp3)",
+                ): str,
             }
         )
 

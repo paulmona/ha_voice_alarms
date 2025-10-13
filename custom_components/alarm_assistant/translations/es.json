@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuración del Asistente de Alarmas por Voz",
+        "description": "Configure su sistema de alarmas controlado por voz",
+        "data": {
+          "alarm_enabled": "Activar Gestión de Alarmas",
+          "media_player_entity": "Reproductor de Medios para Sonidos de Alarma",
+          "alarm_sound": "Sonido de Alarma Predeterminado",
+          "alarm_volume": "Volumen de Alarma (0,0 - 1,0)"
+        }
+      }
+    },
+    "error": {
+      "single_instance_allowed": "Solo se permite una instancia del Asistente de Alarmas por Voz."
+    },
+    "abort": {
+      "single_instance_allowed": "Solo se permite una instancia de esta integración."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones del Asistente de Alarmas por Voz",
+        "description": "Actualice la configuración de su sistema de alarmas",
+        "data": {
+          "alarm_enabled": "Activar Gestión de Alarmas",
+          "media_player_entity": "Reproductor de Medios para Sonidos de Alarma",
+          "alarm_sound": "Sonido de Alarma Predeterminado",
+          "alarm_volume": "Volumen de Alarma (0,0 - 1,0)"
+        }
+      }
+    }
+  }
+}

@@ -12,6 +12,7 @@ from homeassistant.helpers import config_validation as cv
 from .alarm_manager import AlarmManager
 from .const import ADDON_NAME
 from .llm_functions import cleanup_llm_functions, setup_llm_functions
+from .timer_manager import TimerManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,10 +30,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Voice Alarm Assistant from a config entry."""
     _LOGGER.info(f"Setting up {ADDON_NAME} for entry: %s", entry.entry_id)
 
-    # Initialize the alarm manager
+    # Initialize the alarm manager and timer manager
     alarm_manager = AlarmManager(hass)
+    timer_manager = TimerManager(hass)
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN]["alarm_manager"] = alarm_manager
+    hass.data[DOMAIN]["timer_manager"] = timer_manager
 
     # Set up LLM functions
     config_data = {**entry.data, **entry.options}
@@ -60,8 +63,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Clean up LLM functions
     await cleanup_llm_functions(hass)
 
-    # Clean up alarm manager from hass.data
+    # Clean up alarm manager and timer manager from hass.data
     hass.data[DOMAIN].pop("alarm_manager", None)
+    hass.data[DOMAIN].pop("timer_manager", None)
 
     _LOGGER.info(f"{ADDON_NAME} successfully unloaded")
     return True

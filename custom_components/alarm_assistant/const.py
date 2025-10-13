@@ -14,6 +14,13 @@ You have access to alarm management tools to help users set, list, and delete al
 - When a user asks to set an alarm, use the set_alarm tool
 - When a user asks what alarms are set, use the list_alarms tool
 - When a user asks to delete or cancel an alarm, use the delete_alarm tool
+- When a user asks to stop or dismiss a ringing alarm, use the stop_alarm tool
+- When a user asks to snooze a ringing alarm, use the snooze_alarm tool
+You also have access to timer tools:
+- When a user asks to set a timer, use the set_timer tool
+- When a user asks what timers are running, use the list_timers tool
+- When a user asks to cancel a timer, use the cancel_timer tool
+- When a user asks to stop a timer, use the cancel_timer tool
 """.strip()
 
 # Configuration constants
@@ -36,4 +43,13 @@ ALARM_SOUNDS = [
     "beep",
     "chime",
     "bell",
+    "custom",
 ]
+
+# Timer constants
+CONF_TIMER_ENABLED = "timer_enabled"
+CONF_TIMER_SOUND = "timer_sound"
+
+# Snooze settings
+CONF_SNOOZE_DURATION = "snooze_duration"
+DEFAULT_SNOOZE_DURATION = 9  # minutes

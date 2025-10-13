@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuration de l'Assistant d'Alarme Vocale",
+        "description": "Configurez votre système d'alarme contrôlé par la voix",
+        "data": {
+          "alarm_enabled": "Activer la Gestion des Alarmes",
+          "media_player_entity": "Lecteur Multimédia pour Sons d'Alarme",
+          "alarm_sound": "Son d'Alarme par Défaut",
+          "alarm_volume": "Volume d'Alarme (0,0 - 1,0)"
+        }
+      }
+    },
+    "error": {
+      "single_instance_allowed": "Une seule instance de l'Assistant d'Alarme Vocale est autorisée."
+    },
+    "abort": {
+      "single_instance_allowed": "Une seule instance de cette intégration est autorisée."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options de l'Assistant d'Alarme Vocale",
+        "description": "Mettez à jour la configuration de votre système d'alarme",
+        "data": {
+          "alarm_enabled": "Activer la Gestion des Alarmes",
+          "media_player_entity": "Lecteur Multimédia pour Sons d'Alarme",
+          "alarm_sound": "Son d'Alarme par Défaut",
+          "alarm_volume": "Volume d'Alarme (0,0 - 1,0)"
+        }
+      }
+    }
+  }
+}

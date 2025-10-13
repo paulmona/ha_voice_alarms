@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Voice Alarm Assistant Konfiguration",
+        "description": "Konfigurieren Sie Ihr sprachgesteuertes Alarmsystem",
+        "data": {
+          "alarm_enabled": "Alarmverwaltung aktivieren",
+          "media_player_entity": "Medienplayer für Alarmtöne",
+          "alarm_sound": "Standard-Alarmton",
+          "alarm_volume": "Alarmlautstärke (0,0 - 1,0)"
+        }
+      }
+    },
+    "error": {
+      "single_instance_allowed": "Es ist nur eine Instanz des Voice Alarm Assistant erlaubt."
+    },
+    "abort": {
+      "single_instance_allowed": "Nur eine Instanz dieser Integration ist erlaubt."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Voice Alarm Assistant Optionen",
+        "description": "Aktualisieren Sie Ihre Alarmsystem-Konfiguration",
+        "data": {
+          "alarm_enabled": "Alarmverwaltung aktivieren",
+          "media_player_entity": "Medienplayer für Alarmtöne",
+          "alarm_sound": "Standard-Alarmton",
+          "alarm_volume": "Alarmlautstärke (0,0 - 1,0)"
+        }
+      }
+    }
+  }
+}

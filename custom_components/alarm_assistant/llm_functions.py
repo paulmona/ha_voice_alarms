@@ -6,13 +6,16 @@ from typing import Any
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import llm
 
+from .alarm_control_tools import SnoozeAlarmTool, StopAlarmTool
 from .alarm_tools import DeleteAlarmTool, ListAlarmsTool, SetAlarmTool
 from .const import (
     ALARM_API_NAME,
     ALARM_SERVICES_PROMPT,
     CONF_ALARM_ENABLED,
+    CONF_TIMER_ENABLED,
     DOMAIN,
 )
+from .timer_tools import CancelTimerTool, ListTimersTool, SetTimerTool
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,7 +28,7 @@ class AlarmAPI(llm.API):
         super().__init__(hass=hass, id=DOMAIN, name=name)
 
     def get_enabled_tools(self) -> list:
-        """Get the list of enabled alarm tools."""
+        """Get the list of enabled alarm and timer tools."""
         config_data = self.hass.data[DOMAIN].get("config", {})
         entry = next(iter(self.hass.config_entries.async_entries(DOMAIN)), None)
         if entry:
@@ -33,13 +36,23 @@ class AlarmAPI(llm.API):
 
         tools = []
         alarm_enabled = config_data.get(CONF_ALARM_ENABLED, True)
+        timer_enabled = config_data.get(CONF_TIMER_ENABLED, True)
 
         if alarm_enabled:
-            tools = [
+            tools.extend([
                 SetAlarmTool(),
                 ListAlarmsTool(),
                 DeleteAlarmTool(),
-            ]
+                StopAlarmTool(),
+                SnoozeAlarmTool(),
+            ])
+
+        if timer_enabled:
+            tools.extend([
+                SetTimerTool(),
+                ListTimersTool(),
+                CancelTimerTool(),
+            ])
 
         return tools
 

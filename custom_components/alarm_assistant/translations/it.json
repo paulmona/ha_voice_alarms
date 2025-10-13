@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurazione Assistente Sveglia Vocale",
+        "description": "Configura il tuo sistema di allarmi controllato dalla voce",
+        "data": {
+          "alarm_enabled": "Abilita Gestione Allarmi",
+          "media_player_entity": "Lettore Multimediale per Suoni Allarme",
+          "alarm_sound": "Suono Allarme Predefinito",
+          "alarm_volume": "Volume Allarme (0,0 - 1,0)"
+        }
+      }
+    },
+    "error": {
+      "single_instance_allowed": "È consentita solo un'istanza dell'Assistente Sveglia Vocale."
+    },
+    "abort": {
+      "single_instance_allowed": "È consentita solo un'istanza di questa integrazione."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni Assistente Sveglia Vocale",
+        "description": "Aggiorna la configurazione del tuo sistema di allarmi",
+        "data": {
+          "alarm_enabled": "Abilita Gestione Allarmi",
+          "media_player_entity": "Lettore Multimediale per Suoni Allarme",
+          "alarm_sound": "Suono Allarme Predefinito",
+          "alarm_volume": "Volume Allarme (0,0 - 1,0)"
+        }
+      }
+    }
+  }
+}

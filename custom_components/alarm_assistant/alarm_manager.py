@@ -141,11 +141,19 @@ class AlarmManager:
         _LOGGER.info("Triggering alarm %d: %s", alarm_id, alarm_name)
 
         try:
+            # Track ringing alarm
+            if DOMAIN not in self.hass.data:
+                self.hass.data[DOMAIN] = {}
+            if "ringing_alarms" not in self.hass.data[DOMAIN]:
+                self.hass.data[DOMAIN]["ringing_alarms"] = []
+
+            self.hass.data[DOMAIN]["ringing_alarms"].append(alarm_id)
+
             # Play alarm sound
             await self._play_alarm_sound(alarm_sound)
 
             # Send notification (optional)
-            await self._send_notification(alarm_name)
+            await self._send_notification(alarm_name, alarm_id)
 
             # If it's a one-time alarm, disable it
             if not alarm.get("repeat_days"):
@@ -169,16 +177,23 @@ class AlarmManager:
             return
 
         try:
-            # Map sound names to file paths or URLs
-            sound_map = {
-                "default": "/local/alarm_sounds/default.mp3",
-                "gentle": "/local/alarm_sounds/gentle.mp3",
-                "beep": "/local/alarm_sounds/beep.mp3",
-                "chime": "/local/alarm_sounds/chime.mp3",
-                "bell": "/local/alarm_sounds/bell.mp3",
-            }
-
-            sound_file = sound_map.get(sound, sound_map["default"])
+            # Get custom file path if sound is "custom"
+            if sound == "custom":
+                custom_path = config_data.get("custom_sound_path")
+                if custom_path:
+                    sound_file = custom_path
+                else:
+                    sound_file = "/local/alarm_sounds/custom.mp3"
+            else:
+                # Map sound names to file paths or URLs
+                sound_map = {
+                    "default": "/local/alarm_sounds/default.mp3",
+                    "gentle": "/local/alarm_sounds/gentle.mp3",
+                    "beep": "/local/alarm_sounds/beep.mp3",
+                    "chime": "/local/alarm_sounds/chime.mp3",
+                    "bell": "/local/alarm_sounds/bell.mp3",
+                }
+                sound_file = sound_map.get(sound, sound_map["default"])
 
             # Set volume
             await self.hass.services.async_call(
@@ -205,7 +220,7 @@ class AlarmManager:
         except Exception as e:
             _LOGGER.error("Error playing alarm sound: %s", e)
 
-    async def _send_notification(self, alarm_name: str):
+    async def _send_notification(self, alarm_name: str, alarm_id: int):
         """Send a notification for the alarm."""
         try:
             await self.hass.services.async_call(
@@ -214,7 +229,7 @@ class AlarmManager:
                 {
                     "title": "Alarm",
                     "message": f"Alarm '{alarm_name}' is ringing!",
-                    "notification_id": f"alarm_{alarm_name}",
+                    "notification_id": f"alarm_{alarm_id}",
                 },
                 blocking=False,
             )

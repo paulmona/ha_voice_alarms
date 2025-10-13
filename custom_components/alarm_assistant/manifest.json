@@ -2,13 +2,15 @@
   "domain": "alarm_assistant",
   "name": "Voice Alarm Assistant",
   "after_dependencies": [],
-  "codeowners": [],
+  "codeowners": [
+    "@Pewidot"
+  ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/yourusername/alarm_assistant",
+  "documentation": "https://github.com/Pewidot/ha_voice_alarms",
   "integration_type": "service",
   "iot_class": "local_push",
-  "issue_tracker": "https://github.com/yourusername/alarm_assistant/issues",
+  "issue_tracker": "https://github.com/Pewidot/ha_voice_alarms/issues",
   "loggers": [
     "custom_components.alarm_assistant"
   ],
