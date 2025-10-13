@@ -53,3 +53,7 @@ CONF_TIMER_SOUND = "timer_sound"
 # Snooze settings
 CONF_SNOOZE_DURATION = "snooze_duration"
 DEFAULT_SNOOZE_DURATION = 9  # minutes
+
+# Auto-dismiss settings
+CONF_AUTO_DISMISS_DURATION = "auto_dismiss_duration"
+DEFAULT_AUTO_DISMISS_DURATION = 10  # minutes

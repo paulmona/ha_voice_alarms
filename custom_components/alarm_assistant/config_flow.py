@@ -18,7 +18,11 @@ from .const import (
     CONF_ALARM_ENABLED,
     CONF_ALARM_SOUND,
     CONF_ALARM_VOLUME,
+    CONF_AUTO_DISMISS_DURATION,
     CONF_MEDIA_PLAYER,
+    CONF_SNOOZE_DURATION,
+    DEFAULT_AUTO_DISMISS_DURATION,
+    DEFAULT_SNOOZE_DURATION,
     DOMAIN,
     SERVICE_DEFAULTS,
 )
@@ -60,6 +64,16 @@ class AlarmAssistantConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(
                         CONF_ALARM_VOLUME, default=SERVICE_DEFAULTS[CONF_ALARM_VOLUME]
                     ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=1.0)),
+                    vol.Optional(
+                        CONF_SNOOZE_DURATION,
+                        default=DEFAULT_SNOOZE_DURATION,
+                        description="Snooze duration in minutes",
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=60)),
+                    vol.Optional(
+                        CONF_AUTO_DISMISS_DURATION,
+                        default=DEFAULT_AUTO_DISMISS_DURATION,
+                        description="Auto-dismiss alarm after this many minutes",
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=120)),
                     vol.Optional(
                         "custom_sound_path",
                         description="Custom sound file path (e.g., /local/my_sounds/alarm.mp3 or http://...)",
@@ -129,6 +143,16 @@ class AlarmAssistantOptionsFlow(config_entries.OptionsFlow):
                     CONF_ALARM_VOLUME,
                     default=defaults.get(CONF_ALARM_VOLUME, SERVICE_DEFAULTS[CONF_ALARM_VOLUME]),
                 ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=1.0)),
+                vol.Optional(
+                    CONF_SNOOZE_DURATION,
+                    default=defaults.get(CONF_SNOOZE_DURATION, DEFAULT_SNOOZE_DURATION),
+                    description="Snooze duration in minutes",
+                ): vol.All(vol.Coerce(int), vol.Range(min=1, max=60)),
+                vol.Optional(
+                    CONF_AUTO_DISMISS_DURATION,
+                    default=defaults.get(CONF_AUTO_DISMISS_DURATION, DEFAULT_AUTO_DISMISS_DURATION),
+                    description="Auto-dismiss alarm after this many minutes",
+                ): vol.All(vol.Coerce(int), vol.Range(min=1, max=120)),
                 vol.Optional(
                     "custom_sound_path",
                     default=defaults.get("custom_sound_path", ""),

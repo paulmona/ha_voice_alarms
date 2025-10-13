@@ -8,7 +8,14 @@ from homeassistant.helpers.event import async_track_point_in_time
 from homeassistant.util import dt as dt_util
 
 from .alarm_storage import AlarmStorage
-from .const import CONF_ALARM_SOUND, CONF_ALARM_VOLUME, CONF_MEDIA_PLAYER, DOMAIN
+from .const import (
+    CONF_ALARM_SOUND,
+    CONF_ALARM_VOLUME,
+    CONF_AUTO_DISMISS_DURATION,
+    CONF_MEDIA_PLAYER,
+    DEFAULT_AUTO_DISMISS_DURATION,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,6 +28,7 @@ class AlarmManager:
         self.hass = hass
         self.storage = AlarmStorage()
         self._scheduled_timers = {}
+        self._auto_dismiss_timers = {}
         self._running = False
 
     async def start(self):
@@ -47,6 +55,11 @@ class AlarmManager:
         for timer_cancel in self._scheduled_timers.values():
             timer_cancel()
         self._scheduled_timers.clear()
+
+        # Cancel all auto-dismiss timers
+        for timer_cancel in self._auto_dismiss_timers.values():
+            timer_cancel()
+        self._auto_dismiss_timers.clear()
 
     async def _schedule_alarm(self, alarm: dict):
         """Schedule a single alarm."""
@@ -155,6 +168,9 @@ class AlarmManager:
             # Send notification (optional)
             await self._send_notification(alarm_name, alarm_id)
 
+            # Schedule auto-dismiss after configured duration
+            await self._schedule_auto_dismiss(alarm_id)
+
             # If it's a one-time alarm, disable it
             if not alarm.get("repeat_days"):
                 self.storage.toggle_alarm(alarm_id, False)
@@ -235,6 +251,60 @@ class AlarmManager:
             )
         except Exception as e:
             _LOGGER.error("Error sending alarm notification: %s", e)
+
+    async def _schedule_auto_dismiss(self, alarm_id: int):
+        """Schedule automatic dismissal of a ringing alarm."""
+        from homeassistant.helpers.event import async_call_later
+
+        # Get auto-dismiss duration from config or use default
+        config_data = self.hass.data.get(DOMAIN, {}).get("config", {})
+        auto_dismiss_minutes = config_data.get(
+            CONF_AUTO_DISMISS_DURATION, DEFAULT_AUTO_DISMISS_DURATION
+        )
+
+        async def auto_dismiss_callback(now):
+            """Callback to automatically dismiss the alarm."""
+            _LOGGER.info("Auto-dismissing alarm %d after %d minutes", alarm_id, auto_dismiss_minutes)
+
+            # Remove from ringing alarms list
+            if DOMAIN in self.hass.data:
+                ringing_alarms = self.hass.data[DOMAIN].get("ringing_alarms", [])
+                if alarm_id in ringing_alarms:
+                    ringing_alarms.remove(alarm_id)
+
+            # Stop media player
+            media_player = config_data.get(CONF_MEDIA_PLAYER)
+            if media_player:
+                try:
+                    await self.hass.services.async_call(
+                        "media_player",
+                        "media_stop",
+                        {"entity_id": media_player},
+                        blocking=False,
+                    )
+                except Exception as e:
+                    _LOGGER.warning("Could not stop media player during auto-dismiss: %s", e)
+
+            # Dismiss notification
+            try:
+                await self.hass.services.async_call(
+                    "persistent_notification",
+                    "dismiss",
+                    {"notification_id": f"alarm_{alarm_id}"},
+                    blocking=False,
+                )
+            except Exception as e:
+                _LOGGER.warning("Could not dismiss notification during auto-dismiss: %s", e)
+
+            # Remove the timer from tracking
+            self._auto_dismiss_timers.pop(alarm_id, None)
+
+        # Schedule the auto-dismiss
+        cancel_timer = async_call_later(
+            self.hass, auto_dismiss_minutes * 60, auto_dismiss_callback
+        )
+        self._auto_dismiss_timers[alarm_id] = cancel_timer
+        _LOGGER.info("Scheduled auto-dismiss for alarm %d in %d minutes", alarm_id, auto_dismiss_minutes)
 
     async def reschedule_all(self):
         """Reschedule all alarms (useful after configuration changes)."""

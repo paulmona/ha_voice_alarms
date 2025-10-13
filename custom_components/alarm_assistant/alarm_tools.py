@@ -125,16 +125,19 @@ class SetAlarmTool(llm.Tool):
         repeat_days: list[str] | None,
     ):
         """Schedule the alarm in Home Assistant."""
-        # Store alarm scheduling info in hass.data for the alarm manager to handle
-        if DOMAIN not in hass.data:
-            hass.data[DOMAIN] = {}
-        if "scheduled_alarms" not in hass.data[DOMAIN]:
-            hass.data[DOMAIN]["scheduled_alarms"] = {}
+        # Get the alarm manager and schedule the alarm
+        alarm_manager = hass.data.get(DOMAIN, {}).get("alarm_manager")
+        if alarm_manager:
+            # Get the full alarm details from storage
+            storage = AlarmStorage()
+            alarms = storage.get_all_alarms()
+            alarm = next((a for a in alarms if a["id"] == alarm_id), None)
 
-        hass.data[DOMAIN]["scheduled_alarms"][alarm_id] = {
-            "time": time_str,
-            "repeat_days": repeat_days,
-        }
+            if alarm:
+                await alarm_manager._schedule_alarm(alarm)
+                _LOGGER.info("Alarm %d scheduled through AlarmManager", alarm_id)
+        else:
+            _LOGGER.warning("AlarmManager not found, alarm %d not scheduled", alarm_id)
 
 
 class ListAlarmsTool(llm.Tool):
@@ -251,9 +254,10 @@ class DeleteAlarmTool(llm.Tool):
 
             if delete_all:
                 count = storage.delete_all_alarms()
-                # Clear scheduled alarms
-                if DOMAIN in hass.data and "scheduled_alarms" in hass.data[DOMAIN]:
-                    hass.data[DOMAIN]["scheduled_alarms"].clear()
+                # Reschedule all alarms in alarm manager (clears old ones)
+                alarm_manager = hass.data.get(DOMAIN, {}).get("alarm_manager")
+                if alarm_manager:
+                    await alarm_manager.reschedule_all()
                 return self.wrap_response(
                     {
                         "success": True,
@@ -265,12 +269,10 @@ class DeleteAlarmTool(llm.Tool):
             if alarm_id is not None:
                 success = storage.delete_alarm(alarm_id)
                 if success:
-                    # Remove from scheduled alarms
-                    if (
-                        DOMAIN in hass.data
-                        and "scheduled_alarms" in hass.data[DOMAIN]
-                    ):
-                        hass.data[DOMAIN]["scheduled_alarms"].pop(alarm_id, None)
+                    # Reschedule all alarms in alarm manager (removes deleted ones)
+                    alarm_manager = hass.data.get(DOMAIN, {}).get("alarm_manager")
+                    if alarm_manager:
+                        await alarm_manager.reschedule_all()
                     return self.wrap_response(
                         {
                             "success": True,

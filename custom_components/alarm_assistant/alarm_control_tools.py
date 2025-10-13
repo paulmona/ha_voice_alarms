@@ -68,6 +68,14 @@ class StopAlarmTool(llm.Tool):
 
     async def _stop_alarm(self, hass: HomeAssistant, alarm_id: int):
         """Stop a specific alarm."""
+        # Cancel auto-dismiss timer if it exists
+        alarm_manager = hass.data.get(DOMAIN, {}).get("alarm_manager")
+        if alarm_manager and hasattr(alarm_manager, "_auto_dismiss_timers"):
+            cancel_func = alarm_manager._auto_dismiss_timers.pop(alarm_id, None)
+            if cancel_func:
+                cancel_func()
+                _LOGGER.debug("Cancelled auto-dismiss timer for alarm %d", alarm_id)
+
         # Stop media player
         config_data = hass.data.get(DOMAIN, {}).get("config", {})
         media_player = config_data.get("media_player_entity")
@@ -143,7 +151,16 @@ class SnoozeAlarmTool(llm.Tool):
             if not ringing_alarms:
                 return {"error": "No alarm is currently ringing"}
 
-            # Stop the sound first
+            # Cancel auto-dismiss timers for all ringing alarms
+            alarm_manager = hass.data[DOMAIN].get("alarm_manager")
+            if alarm_manager and hasattr(alarm_manager, "_auto_dismiss_timers"):
+                for alarm_id in ringing_alarms:
+                    cancel_func = alarm_manager._auto_dismiss_timers.pop(alarm_id, None)
+                    if cancel_func:
+                        cancel_func()
+                        _LOGGER.debug("Cancelled auto-dismiss timer for alarm %d during snooze", alarm_id)
+
+            # Stop the sound
             config_data = hass.data.get(DOMAIN, {}).get("config", {})
             media_player = config_data.get("media_player_entity")
 
@@ -161,7 +178,6 @@ class SnoozeAlarmTool(llm.Tool):
             # Schedule alarm to ring again after snooze duration
             from homeassistant.helpers.event import async_call_later
 
-            alarm_manager = hass.data[DOMAIN].get("alarm_manager")
             count = 0
 
             for alarm_id in ringing_alarms[:]:
