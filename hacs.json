@@ -3,5 +3,7 @@
   "content_in_root": false,
   "filename": "alarm_assistant",
   "render_readme": true,
-  "homeassistant": "2024.1.0"
+  "homeassistant": "2024.1.0",
+  "zip_release": false,
+  "hide_default_branch": false
 }

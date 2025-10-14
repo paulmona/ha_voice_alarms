@@ -7,7 +7,7 @@ A custom Home Assistant integration that enables voice-controlled alarm and time
 
 ## Features
 
-### 🎯 Alarms
+### Alarms
 - **Set Alarms**: Voice commands to set alarms at specific times
 - **List Alarms**: Ask what alarms are currently set
 - **Delete Alarms**: Remove alarms by ID, name, or all at once
@@ -15,25 +15,25 @@ A custom Home Assistant integration that enables voice-controlled alarm and time
 - **Stop/Snooze**: Stop or snooze ringing alarms
 - **Persistent Storage**: Alarms survive Home Assistant restarts
 
-### ⏱️ Timers
+### Timers
 - **Set Timers**: Voice commands for countdown timers
 - **List Timers**: Check active timers and remaining time
 - **Cancel Timers**: Stop timers before completion
 - **Multiple Timers**: Run multiple timers simultaneously
 
-### 🔊 Customization
+### Customization
 - **Multiple Sounds**: Choose from 5 built-in sounds
 - **Custom Sounds**: Use your own audio files
 - **Volume Control**: Configure alarm volume
 - **Media Player Integration**: Works with any HA media player
 
-### 🌍 Multilingual
+### Multilingual
 Full support for 5 languages:
-- 🇺🇸 English
-- 🇩🇪 German (Deutsch)
-- 🇪🇸 Spanish (Español)
-- 🇮🇹 Italian (Italiano)
-- 🇫🇷 French (Français)
+- English
+- German (Deutsch)
+- Spanish (Español)
+- Italian (Italiano)
+- French (Français)
 
 ## Installation
 
@@ -278,4 +278,4 @@ Inspired by the [LLM Intents](https://github.com/skye-harris/llm_intents) integr
 
 ---
 
-**Made with ❤️ by Pewidot**
+**Made by Pewidot**
