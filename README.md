@@ -270,6 +270,28 @@ Open source - use and modify as needed for your Home Assistant installation.
 
 Inspired by the [LLM Intents](https://github.com/skye-harris/llm_intents) integration.
 
+<details>
+<summary>Sound Attribution</summary>
+
+All alarm sounds are licensed under Creative Commons and used with attribution:
+
+- **gentle** - "summer-rain-storm" by r2d21
+  https://freesound.org/s/759588/ - License: Creative Commons 0
+
+- **bell** - "School bell.wav" by deleted_user_7020630
+  https://freesound.org/s/378394/ - License: Creative Commons 0
+
+- **beep** - "Vandierdonck_Joan_2015_2016_alarm_beep.wav" by univ_lyon3
+  https://freesound.org/s/324415/ - License: Creative Commons 0
+
+- **chime** - "Analog Alarm Clock" by bone666138
+  https://freesound.org/s/198841/ - License: Attribution 4.0
+
+- **default** - "Roosters and dogs wake up in the small village of La Preciosita. A morning in Mexican countryside." by felix.blume
+  https://freesound.org/s/134718/ - License: Creative Commons 0
+
+</details>
+
 ## Support
 
 - **Issues**: https://github.com/Pewidot/ha_voice_alarms/issues
